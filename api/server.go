@@ -25,24 +25,12 @@ func NewServer(store db.Store) *Server {
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)
 	router.GET("/accounts", server.listAccounts)
+	router.POST("/transfers", server.createTransfer)
 
 	server.router = router
 	return server
 }
 
-// Custom validation function for currency
-func validCurrency(fl validator.FieldLevel) bool {
-	// List of supported currencies
-	supportedCurrencies := map[string]bool{
-		"USD": true,
-		"EUR": true,
-		"GBP": true,
-		"JPY": true,
-	}
-
-	currency := fl.Field().String()
-	return supportedCurrencies[currency]
-}
 
 func errorResponse(err error) gin.H {
 	return gin.H{"error": err.Error()}

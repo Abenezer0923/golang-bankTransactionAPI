@@ -1,4 +1,4 @@
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test postgres-connect show-db
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test postgres-connect show-db mock
 
 # Start PostgreSQL container
 postgres:
@@ -38,6 +38,14 @@ show-db:
 # Show all data from a specific table (replace 'accounts' with your table name)
 show-accounts:
 	sudo docker exec -it bank_postgres psql -U root -d simple_bank -c "SELECT * FROM accounts;"
+
+# Generate mocks
+mock:
+	 mockgen -package mockdb -destination db/mock/store.go github.com/Abenezer0923/simple-bank/db/sqlc Store
+
+server:
+	go run main.go
+
 
 # Run tests
 test:
