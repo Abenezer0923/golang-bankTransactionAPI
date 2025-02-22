@@ -1,4 +1,4 @@
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test postgres-connect show-db mock
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test postgres-connect show-db show-accounts mock server add-migration
 
 # Start PostgreSQL container
 postgres:
@@ -10,11 +10,11 @@ show:
 
 # Create the database
 createdb:
-	docker exec -it bank_postgres createdb --username=root --owner=root simple_bank
+	sudo docker exec -it bank_postgres createdb --username=root --owner=root simple_bank
 
 # Drop the database
 dropdb:
-	docker exec -it bank_postgres dropdb simple_bank
+	sudo docker exec -it bank_postgres dropdb simple_bank
 
 # Run migrations
 migrateup:
@@ -41,11 +41,15 @@ show-accounts:
 
 # Generate mocks
 mock:
-	 mockgen -package mockdb -destination db/mock/store.go github.com/Abenezer0923/simple-bank/db/sqlc Store
+	mockgen -package mockdb -destination db/mock/store.go github.com/Abenezer0923/simple-bank/db/sqlc Store
 
+# Start the server
 server:
 	go run main.go
 
+# Create a new database migration
+add-migration:
+	migrate create -ext sql -dir db/migration -seq add_users
 
 # Run tests
 test:
